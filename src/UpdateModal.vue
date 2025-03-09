@@ -35,7 +35,7 @@ Api.getLatestVersion().then(data => {
         <a href="https://www.yuque.com/liulyxandy/class-schedule/upgrade" target="_blank">如何更新？</a>
         <template #footer>
             <Button @click="updateModal = false" :disabled="forceUpdate">暂时忽略</Button>
-            <Button @click="updateModal = false; openUrl('https://cs.liulyxandy.cn')">前往下载</Button>
+            <Button @click="openUrl('https://cs.liulyxandy.cn')">前往下载</Button>
         </template>
     </Modal>
 </template>
