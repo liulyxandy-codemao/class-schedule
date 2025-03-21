@@ -51,7 +51,9 @@ export const useScheduleStore = defineStore('schedule', {
                     modalsStore.dataStatus = 'error';
                     return;
                 }
-                this.schedule = JSON.parse(await fs.readTextFile('backup.schedule.json', {baseDir: fs.BaseDirectory.AppConfig}))[new Date().getDay()];
+                let day = new Date().getDay();
+                day = day == 0 ? 6 : day - 1;
+                this.schedule = JSON.parse(await fs.readTextFile('backup.schedule.json', {baseDir: fs.BaseDirectory.AppConfig}))[day];
                 this.timetable = JSON.parse(await fs.readTextFile('backup.timetable.json', {baseDir: fs.BaseDirectory.AppConfig}));
                 modalsStore.dataStatus = 'success';
             } else {
