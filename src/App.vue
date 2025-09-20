@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useConfigStore, useModalsStore, useScheduleStore } from './store.ts';
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import ConfigModal from './ConfigModal.vue';
 import UpdateModal from './UpdateModal.vue';
 import { Row, Col, Space, Popover, Switch, Modal, Input } from 'ant-design-vue';
@@ -42,6 +42,8 @@ setInterval(() => {
 configStore.hasConfig().then(async (exists) => {
   if (exists) {
     await configStore.readConfig();
+    // 应用保存的缩放级别
+    document.documentElement.style.zoom = configStore.ui.zoomLevel.toString();
     await scheduleStore.fetchSchedule(api);
   } else {
     modalsStore.settings = true;
