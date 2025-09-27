@@ -55,7 +55,7 @@ configStore.hasConfig().then(async (exists) => {
 // 更新背景颜色的函数
 const updateBackgroundColor = () => {
   if (configStore.ui.disableBackgroundTransparency) {
-    document.documentElement.style.backgroundColor = '#808080'; // 灰色
+    document.documentElement.style.backgroundColor = '#1b1b1b'; // 灰色
   } else {
     document.documentElement.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'; // 带透明度的颜色
   }
