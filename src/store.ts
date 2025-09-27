@@ -8,7 +8,8 @@ export const useConfigStore = defineStore('config', {
         return {
             ui: {
                 fontSize: '28',
-                zoomLevel: 1.0
+                zoomLevel: 1.0,
+                disableBackgroundTransparency: false
             },
             api: {
                 classid: '202301',

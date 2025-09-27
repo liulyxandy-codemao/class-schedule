@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useConfigStore, useModalsStore, useScheduleStore } from './store.ts';
-import { h, ref, computed } from "vue";
+import { h, ref } from "vue";
 import ConfigModal from './ConfigModal.vue';
 import UpdateModal from './UpdateModal.vue';
 import { Row, Col, Space, Popover, Switch, Modal, Input } from 'ant-design-vue';
@@ -44,10 +44,29 @@ configStore.hasConfig().then(async (exists) => {
     await configStore.readConfig();
     // 应用保存的缩放级别
     document.documentElement.style.zoom = configStore.ui.zoomLevel.toString();
+    // 应用背景透明度设置
+    updateBackgroundColor();
     await scheduleStore.fetchSchedule(api);
   } else {
     modalsStore.settings = true;
   }
+});
+
+// 更新背景颜色的函数
+const updateBackgroundColor = () => {
+  if (configStore.ui.disableBackgroundTransparency) {
+    document.documentElement.style.backgroundColor = '#808080'; // 灰色
+  } else {
+    document.documentElement.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'; // 带透明度的颜色
+  }
+};
+
+// 监听配置变化
+configStore.$subscribe((_, state) => {
+  // 应用缩放级别变化
+  document.documentElement.style.zoom = state.ui.zoomLevel.toString();
+  // 应用背景透明度变化
+  updateBackgroundColor();
 });
 
 const handleSwitch = async (checked: number | string | boolean) => {
@@ -148,7 +167,6 @@ const handleContextMenu = (item: ApiRespData.TimeTableItem) => {
   line-height: 24px;
   font-weight: 400;
   color: #0f0f0f;
-  background-color: rgba(0, 0, 0, 0.2);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

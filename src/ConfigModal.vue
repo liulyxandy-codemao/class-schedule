@@ -61,6 +61,9 @@ isEnabled().then((enabled) => {
             <FormItem label="自动启动">
                 <Switch v-model:checked="autostart" />
             </FormItem>
+            <FormItem label="关闭背景透明度">
+                <Switch v-model:checked="configData.ui.value.disableBackgroundTransparency" />
+            </FormItem>
         </Form>
         <Button type="dashed" @click="modalsStore.settings = true">高级设置</Button>
     </Modal>

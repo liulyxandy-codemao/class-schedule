@@ -4,7 +4,8 @@ export interface Config {
     api: ApiConfig,
     ui: {
         fontSize: string,
-        zoomLevel: number
+        zoomLevel: number,
+        disableBackgroundTransparency: boolean
     }
 }
 
