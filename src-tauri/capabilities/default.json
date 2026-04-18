@@ -13,6 +13,8 @@
     "fs:allow-appconfig-write",
     "autostart:allow-enable",
     "autostart:allow-disable",
-    "autostart:allow-is-enabled"
+    "autostart:allow-is-enabled",
+    "core:window:allow-set-size",
+    "core:window:allow-set-position"
   ]
 }

@@ -1,16 +1,43 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useConfigStore, useModalsStore, useScheduleStore } from './store.ts';
-import { h, ref } from "vue";
+import { h, ref, onMounted } from "vue";
 import ConfigModal from './ConfigModal.vue';
 import UpdateModal from './UpdateModal.vue';
 import { Row, Col, Space, Popover, Switch, Modal, Input } from 'ant-design-vue';
 import { ControlOutlined, CloudTwoTone, DatabaseTwoTone, CloudOutlined, DatabaseOutlined } from '@ant-design/icons-vue';
 import Api, { ApiRespData } from './api.ts';
 import { VERSION } from './config.ts';
-import { moveWindow, Position } from '@tauri-apps/plugin-positioner';
+import { getCurrentWindow, LogicalPosition, LogicalSize } from '@tauri-apps/api/window';
 
-moveWindow(Position.TopRight);
+const adaptWindowToRightSide = async () => {
+  try {
+    const appWindow = getCurrentWindow();
+    const scaleFactor = await appWindow.scaleFactor();
+    const outerSize = await appWindow.outerSize();
+
+    const currentWidth = Math.round(outerSize.width / scaleFactor);
+    const screenInfo = window.screen as Screen & { availLeft?: number; availTop?: number };
+    const workLeft = screenInfo.availLeft ?? 0;
+    const workTop = screenInfo.availTop ?? 0;
+    const workWidth = window.screen.availWidth;
+    const workHeight = window.screen.availHeight;
+
+    const targetWidth = Math.min(currentWidth, workWidth);
+    const targetHeight = Math.max(300, workHeight);
+    const targetX = workLeft + workWidth - targetWidth;
+    const targetY = workTop;
+
+    await appWindow.setSize(new LogicalSize(targetWidth, targetHeight));
+    await appWindow.setPosition(new LogicalPosition(targetX, targetY));
+  } catch (error) {
+    console.warn('窗口自适应布局失败:', error);
+  }
+};
+
+onMounted(() => {
+  void adaptWindowToRightSide();
+});
 
 const configStore = useConfigStore();
 const config = storeToRefs(configStore);
