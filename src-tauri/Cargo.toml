@@ -1,6 +1,6 @@
 [package]
 name = "class-schedule"
-version = "2.1.2"
+version = "2.3.0"
 description = "A Tauri App"
 authors = ["刘lyxAndy"]
 edition = "2021"
