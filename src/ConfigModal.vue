@@ -24,17 +24,22 @@ const zoomLevel = computed({
 const saveConfig = async () => {
     try {
         await configStore.saveConfig();
-        if (autostart.value) {
-            await enable();
-        } else {
-            await disable();
-        }
     } catch (err) {
         console.error("保存配置失败:", err);
         notification.error({
             message: "保存配置失败",
             description: "请检查磁盘空间和权限。",
         });
+        return;
+    }
+    try {
+        if (autostart.value) {
+            await enable();
+        } else {
+            await disable();
+        }
+    } catch (err) {
+        console.warn("设置自启动失败:", err);
     }
     modalsStore.toggleconfig();
 }

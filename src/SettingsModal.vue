@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Modal, Form, FormItem, Input, Button } from 'ant-design-vue';
+import { Modal, Form, FormItem, Input, Button, notification } from 'ant-design-vue';
 import { ref, onUnmounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useConfigStore, useModalsStore } from './store.ts';
@@ -22,12 +22,21 @@ onUnmounted(() => {
 })
 
 const saveConfig = async () => {
-    configStore.$patch({
-        api: configData.value
-    });
-    await configStore.saveConfig()
+    try {
+        configStore.$patch({
+            api: configData.value
+        });
+        await configStore.saveConfig();
+    } catch (err) {
+        console.error("保存配置失败:", err);
+        notification.error({
+            message: "配置保存失败",
+            description: "请检查磁盘空间和权限。",
+        });
+        return;
+    }
     modalsStore.settings = false;
-    location.reload()
+    location.reload();
 }
 
 </script>

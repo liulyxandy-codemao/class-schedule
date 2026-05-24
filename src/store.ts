@@ -44,10 +44,7 @@ export const useConfigStore = defineStore('config', {
                 await fs.writeTextFile('config.json', JSON.stringify(this.$state), {baseDir: fs.BaseDirectory.AppConfig});
             } catch (err) {
                 console.error("保存配置失败:", err);
-                notification.error({
-                    message: "配置保存失败",
-                    description: "请检查磁盘空间和权限。",
-                });
+                throw err;
             }
         },
         async setConfig(state: Config) {
