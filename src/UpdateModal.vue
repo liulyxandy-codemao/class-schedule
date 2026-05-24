@@ -19,6 +19,8 @@ Api.getLatestVersion().then(data => {
             forceUpdate.value = true;
         }
     }
+}).catch((err) => {
+    console.warn("版本检查失败:", err);
 })
 </script>
 <template>

@@ -4,7 +4,7 @@ import { useConfigStore, useModalsStore, useScheduleStore } from './store.ts';
 import { h, ref, onMounted, onUnmounted } from "vue";
 import ConfigModal from './ConfigModal.vue';
 import UpdateModal from './UpdateModal.vue';
-import { Row, Col, Space, Popover, Switch, Modal, Input } from 'ant-design-vue';
+import { Row, Col, Space, Popover, Switch, Modal, Input, notification } from 'ant-design-vue';
 import { ControlOutlined, CloudTwoTone, DatabaseTwoTone, CloudOutlined, DatabaseOutlined } from '@ant-design/icons-vue';
 import Api, { ApiRespData } from './api.ts';
 import { VERSION } from './config.ts';
@@ -68,15 +68,31 @@ const clockTimer = setInterval(() => {
 
 configStore.hasConfig().then(async (exists) => {
   if (exists) {
-    await configStore.readConfig();
-    // 应用保存的缩放级别
-    document.documentElement.style.zoom = configStore.ui.zoomLevel.toString();
-    // 应用背景透明度设置
-    updateBackgroundColor();
-    await scheduleStore.fetchSchedule(api);
+    try {
+      await configStore.readConfig();
+      // 应用保存的缩放级别
+      document.documentElement.style.zoom = configStore.ui.zoomLevel.toString();
+      // 应用背景透明度设置
+      updateBackgroundColor();
+      await scheduleStore.fetchSchedule(api);
+    } catch (err) {
+      console.error("启动失败:", err);
+      modalsStore.dataStatus = "error";
+      notification.error({
+        message: "启动失败",
+        description: "无法加载配置或获取课表数据，请检查设置。",
+      });
+    }
   } else {
     modalsStore.settings = true;
   }
+}).catch((err) => {
+  console.error("配置检查失败:", err);
+  modalsStore.dataStatus = "error";
+  notification.error({
+    message: "配置检查失败",
+    description: "无法读取应用配置目录，请检查磁盘权限。",
+  });
 });
 
 // 更新背景颜色的函数

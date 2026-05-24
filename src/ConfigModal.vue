@@ -1,7 +1,7 @@
-<script setup>
-import { Modal, Form, FormItem, Input, Button, Switch, Slider } from 'ant-design-vue';
+<script setup lang="ts">
+import { Modal, Form, FormItem, Input, Button, Switch, Slider, notification } from 'ant-design-vue';
 import SettingsModal from './SettingsModal.vue';
-import { ref, unref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useConfigStore, useModalsStore } from './store.ts';
 import { enable, disable, isEnabled } from '@tauri-apps/plugin-autostart';
@@ -22,18 +22,27 @@ const zoomLevel = computed({
 });
 
 const saveConfig = async () => {
-    await configStore.saveConfig();
-    if (autostart.value) {
-        enable();
-    }
-    else {
-        disable();
+    try {
+        await configStore.saveConfig();
+        if (autostart.value) {
+            await enable();
+        } else {
+            await disable();
+        }
+    } catch (err) {
+        console.error("保存配置失败:", err);
+        notification.error({
+            message: "保存配置失败",
+            description: "请检查磁盘空间和权限。",
+        });
     }
     modalsStore.toggleconfig();
 }
 
 isEnabled().then((enabled) => {
     autostart.value = enabled;
+}).catch((err) => {
+    console.warn("检查自启动状态失败:", err);
 })
 
 </script>
@@ -51,7 +60,7 @@ isEnabled().then((enabled) => {
                         :max="1.5" 
                         :step="0.1" 
                         style="flex: 1;"
-                        :tooltip-formatter="(value) => `${Math.round(value * 100)}%`"
+                        :tooltip-formatter="(value: number) => `${Math.round(value * 100)}%`"
                     />
                     <span style="min-width: 40px; text-align: center; font-weight: bold;">
                         {{ Math.round(zoomLevel * 100) }}%
