@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useConfigStore, useModalsStore, useScheduleStore } from './store.ts';
-import { h, ref, onMounted } from "vue";
+import { h, ref, onMounted, onUnmounted } from "vue";
 import ConfigModal from './ConfigModal.vue';
 import UpdateModal from './UpdateModal.vue';
 import { Row, Col, Space, Popover, Switch, Modal, Input } from 'ant-design-vue';
@@ -47,14 +47,14 @@ const { schedule, timetable } = storeToRefs(scheduleStore);
 
 let api = new Api(configStore.api)
 
-configStore.$subscribe((_, state) => {
+const unsubApi = configStore.$subscribe((_, state) => {
   api = new Api(state.api)
 })
 
 const timestr = ref("...");
 const datestr = ref("...");
 
-setInterval(() => {
+const clockTimer = setInterval(() => {
   const now = new Date();
   const h = now.getHours();
   const m = now.getMinutes();
@@ -89,11 +89,17 @@ const updateBackgroundColor = () => {
 };
 
 // 监听配置变化
-configStore.$subscribe((_, state) => {
+const unsubConfig = configStore.$subscribe((_, state) => {
   // 应用缩放级别变化
   document.documentElement.style.zoom = state.ui.zoomLevel.toString();
   // 应用背景透明度变化
   updateBackgroundColor();
+});
+
+onUnmounted(() => {
+  clearInterval(clockTimer);
+  unsubApi();
+  unsubConfig();
 });
 
 const handleSwitch = async (checked: number | string | boolean) => {

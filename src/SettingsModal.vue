@@ -1,6 +1,6 @@
-<script setup>
+<script setup lang="ts">
 import { Modal, Form, FormItem, Input, Button } from 'ant-design-vue';
-import { ref, unref } from 'vue';
+import { ref, onUnmounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useConfigStore, useModalsStore } from './store.ts';
 const configStore = useConfigStore();
@@ -12,9 +12,13 @@ const configData = ref({
     classid: configStore.api.classid
 })
 
-configStore.$subscribe((state) => {
-    configData.value.baseurl = state.payload.api.baseurl;
-    configData.value.classid = state.payload.api.classid;
+const unsubSettings = configStore.$subscribe((_, state) => {
+    configData.value.baseurl = state.api.baseurl;
+    configData.value.classid = state.api.classid;
+})
+
+onUnmounted(() => {
+    unsubSettings();
 })
 
 const saveConfig = async () => {
