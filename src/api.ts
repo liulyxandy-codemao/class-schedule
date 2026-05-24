@@ -103,19 +103,16 @@ class Api {
      * @returns 时间表。
      */
     async getTimeTable(): Promise<ApiRespData.TimeTable> {
-        return new Promise((resolve, reject) => {
-            const modalsStore = useModalsStore();
-            modalsStore.dataStatus = 'fetching';
-            this.request.get<ApiResponse<ApiRespData.TimeTable>>("/timetable")
-                .then(res => {
-                    modalsStore.dataStatus = 'success';
-                    resolve(res.data.data);
-                })
-                .catch(err => {
-                    modalsStore.dataStatus = 'error';
-                    reject(err);
-                });
-        });
+        const modalsStore = useModalsStore();
+        modalsStore.dataStatus = 'fetching';
+        try {
+            const res = await this.request.get<ApiResponse<ApiRespData.TimeTable>>("/timetable");
+            modalsStore.dataStatus = 'success';
+            return res.data.data;
+        } catch (err) {
+            modalsStore.dataStatus = 'error';
+            throw err;
+        }
     }
 
     /**
@@ -123,19 +120,16 @@ class Api {
      * @returns 课表。
      */
     async getSchedule(): Promise<ApiRespData.Schedule> {
-        return new Promise((resolve, reject) => {
-            const modalsStore = useModalsStore();
-            modalsStore.dataStatus = 'fetching';
-            this.request.get<ApiResponse<ApiRespData.Schedule>>("/schedule")
-                .then(res => {
-                    modalsStore.dataStatus = 'success';
-                    resolve(res.data.data);
-                })
-                .catch(err => {
-                    modalsStore.dataStatus = 'error';
-                    reject(err);
-                });
-        });
+        const modalsStore = useModalsStore();
+        modalsStore.dataStatus = 'fetching';
+        try {
+            const res = await this.request.get<ApiResponse<ApiRespData.Schedule>>("/schedule");
+            modalsStore.dataStatus = 'success';
+            return res.data.data;
+        } catch (err) {
+            modalsStore.dataStatus = 'error';
+            throw err;
+        }
     }
 
     /**
@@ -143,19 +137,16 @@ class Api {
      * @returns 班级信息。
      */
     async getClassInfo(): Promise<ApiRespData.ClassInfo> {
-        return new Promise((resolve, reject) => {
-            const modalsStore = useModalsStore();
-            modalsStore.dataStatus = 'fetching';
-            this.request.get<ApiResponse<ApiRespData.ClassInfo>>("/")
-                .then(res => {
-                    modalsStore.dataStatus = 'success';
-                    resolve(res.data.data);
-                })
-                .catch(err => {
-                    modalsStore.dataStatus = 'error';
-                    reject(err);
-                });
-        });
+        const modalsStore = useModalsStore();
+        modalsStore.dataStatus = 'fetching';
+        try {
+            const res = await this.request.get<ApiResponse<ApiRespData.ClassInfo>>("/");
+            modalsStore.dataStatus = 'success';
+            return res.data.data;
+        } catch (err) {
+            modalsStore.dataStatus = 'error';
+            throw err;
+        }
     }
 
     /**
@@ -163,15 +154,8 @@ class Api {
      * @returns 软件的最新版本信息。
      */
     static async getLatestVersion(): Promise<ApiRespData.Version> {
-        return new Promise((resolve, reject) => {
-            axios.get<ApiResponse<ApiRespData.Version>>("https://backend-cs.liulyxandy.cn/version")
-                .then(res => {
-                    resolve(res.data.data);
-                })
-                .catch(err => {
-                    reject(err);
-                });
-        })
+        const res = await axios.get<ApiResponse<ApiRespData.Version>>("https://backend-cs.liulyxandy.cn/version");
+        return res.data.data;
     }
 }
 
