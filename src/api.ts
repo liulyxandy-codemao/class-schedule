@@ -57,20 +57,6 @@ export namespace ApiRespData {
     }
     export type TimeTable = Array<TimeTableItem>;
     export type Schedule = Array<Array<string>>;
-    export interface ClassInfo {
-        /**
-         * 班级名称。
-         */
-        name: string,
-        /**
-         * 班级ID。
-         */
-        id: string,
-        /**
-         * 班级描述。
-         */
-        description: string
-    }
 }
 
 
@@ -124,23 +110,6 @@ class Api {
         modalsStore.dataStatus = 'fetching';
         try {
             const res = await this.request.get<ApiResponse<ApiRespData.Schedule>>("/schedule");
-            modalsStore.dataStatus = 'success';
-            return res.data.data;
-        } catch (err) {
-            modalsStore.dataStatus = 'error';
-            throw err;
-        }
-    }
-
-    /**
-     * 获取班级信息。
-     * @returns 班级信息。
-     */
-    async getClassInfo(): Promise<ApiRespData.ClassInfo> {
-        const modalsStore = useModalsStore();
-        modalsStore.dataStatus = 'fetching';
-        try {
-            const res = await this.request.get<ApiResponse<ApiRespData.ClassInfo>>("/");
             modalsStore.dataStatus = 'success';
             return res.data.data;
         } catch (err) {
